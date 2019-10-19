@@ -1,0 +1,70 @@
+LocationID,Zone,service_zone
+4,Alphabet City,Yellow Zone
+12,Battery Park,Yellow Zone
+13,Battery Park City,Yellow Zone
+24,Bloomingdale,Yellow Zone
+41,Central Harlem,Boro Zone
+42,Central Harlem North,Boro Zone
+43,Central Park,Yellow Zone
+45,Chinatown,Yellow Zone
+48,Clinton East,Yellow Zone
+50,Clinton West,Yellow Zone
+68,East Chelsea,Yellow Zone
+74,East Harlem North,Boro Zone
+75,East Harlem South,Boro Zone
+79,East Village,Yellow Zone
+87,Financial District North,Yellow Zone
+88,Financial District South,Yellow Zone
+90,Flatiron,Yellow Zone
+100,Garment District,Yellow Zone
+103,Governor's Island/Ellis Island/Liberty Island,Yellow Zone
+104,Governor's Island/Ellis Island/Liberty Island,Yellow Zone
+105,Governor's Island/Ellis Island/Liberty Island,Yellow Zone
+107,Gramercy,Yellow Zone
+113,Greenwich Village North,Yellow Zone
+114,Greenwich Village South,Yellow Zone
+116,Hamilton Heights,Boro Zone
+120,Highbridge Park,Boro Zone
+125,Hudson Sq,Yellow Zone
+127,Inwood,Boro Zone
+128,Inwood Hill Park,Boro Zone
+137,Kips Bay,Yellow Zone
+140,Lenox Hill East,Yellow Zone
+141,Lenox Hill West,Yellow Zone
+142,Lincoln Square East,Yellow Zone
+143,Lincoln Square West,Yellow Zone
+144,Little Italy/NoLiTa,Yellow Zone
+148,Lower East Side,Yellow Zone
+151,Manhattan Valley,Yellow Zone
+152,Manhattanville,Boro Zone
+153,Marble Hill,Boro Zone
+158,Meatpacking/West Village West,Yellow Zone
+161,Midtown Center,Yellow Zone
+162,Midtown East,Yellow Zone
+163,Midtown North,Yellow Zone
+164,Midtown South,Yellow Zone
+166,Morningside Heights,Boro Zone
+170,Murray Hill,Yellow Zone
+186,Penn Station/Madison Sq West,Yellow Zone
+194,Randalls Island,Yellow Zone
+202,Roosevelt Island,Boro Zone
+209,Seaport,Yellow Zone
+211,SoHo,Yellow Zone
+224,Stuy Town/Peter Cooper Village,Yellow Zone
+229,Sutton Place/Turtle Bay North,Yellow Zone
+230,Times Sq/Theatre District,Yellow Zone
+231,TriBeCa/Civic Center,Yellow Zone
+232,Two Bridges/Seward Park,Yellow Zone
+233,UN/Turtle Bay South,Yellow Zone
+234,Union Sq,Yellow Zone
+236,Upper East Side North,Yellow Zone
+237,Upper East Side South,Yellow Zone
+238,Upper West Side North,Yellow Zone
+239,Upper West Side South,Yellow Zone
+243,Washington Heights North,Boro Zone
+244,Washington Heights South,Boro Zone
+246,West Chelsea/Hudson Yards,Yellow Zone
+249,West Village,Yellow Zone
+261,World Trade Center,Yellow Zone
+262,Yorkville East,Yellow Zone
+263,Yorkville West,Yellow Zone
