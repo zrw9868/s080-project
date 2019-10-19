@@ -1,9 +1,0 @@
---replace this with your query
-SELECT 
-	count(CAND_ID) as CAND_NUM_2016
-FROM 
-	CANDIDATE
-WHERE
-	CAND_OFFICE = 'P'
-	AND CAND_STATUS IN ('C','N')
-	AND CAND_ELECTION_YR = 2016;
