@@ -5,6 +5,7 @@ import zipfile
 import random
 import itertools
 import math
+import seaborn as sns
 
 import shapefile
 from shapely.geometry import Polygon
@@ -13,7 +14,20 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
+#get scaled for heat map
+do = pd.read_csv("dropoff-all.csv")
+do["scale"]=do["Half Year Sum"]
+l,u = min(do["scale"])-30, max(do["scale"])
+do["scale"] = (do["scale"]-l)/(u-l)
+print(min(do["scale"]), max(do["scale"]))
+#plt.scatter(do["DOLocationID"], do["scale"])
+#plt.show()
 
+pu = pd.read_csv("pickup-all.csv")
+pu["scale"]=pu["Half Year Sum"]
+l, u = min(pu["scale"])-30, max(pu["scale"])
+pu["scale"] = (pu["scale"]-l)/(u-l)
+print(min(pu["scale"]), max(pu["scale"]))
 #green_raw = pd.read_csv("green_tripdata_2019-01.csv")
 #print(green_raw)
 def get_lat_lon(sf):
@@ -50,43 +64,53 @@ def get_boundaries(sf):
 
     return lat_min, lat_max, lon_min, lon_max
 
-def draw_zone_map(ax, sf):
-    continent = [235/256, 151/256, 78/256]
-    ocean = (89/256, 171/256, 227/256)
+def draw_zone_map(ax, sf, heat_map=[pu,do]):
+    colors = sns.color_palette("Reds",5)
+    
+    continent = "#990000"#[235/256, 151/256, 78/256]
+    ocean = "#66ccff" #(89/256, 171/256, 227/256)
     #ocean = (22/256, 165/256, 217/256)
     ax.set_facecolor(ocean)
-       
+
     for sr in sf.shapeRecords():
         shape = sr.shape
         rec = sr.record
         if rec[shp_dic['borough']]=='Manhattan':
-	        loc_id = rec[shp_dic['LocationID']]
-	        zone = rec[shp_dic['zone']]
-	        
-	        col = continent
+            loc_id = rec[shp_dic['LocationID']]
+            zone = rec[shp_dic['zone']]
 
-	        # check number of parts (could use MultiPolygon class of shapely?)
-	        nparts = len(shape.parts) # total parts
-	        if nparts == 1:
-	            polygon = Polygon(shape.points)
-	            patch = PolygonPatch(polygon, facecolor=col, alpha=1.0, zorder=2)
-	            ax.add_patch(patch)
-	        else: # loop over parts of each shape, plot separately
-	            for ip in range(nparts): # loop over parts, plot separately
-	                i0 = shape.parts[ip]
-	                if ip < nparts-1:
-	                    i1 = shape.parts[ip+1]-1
-	                else:
-	                    i1 = len(shape.points)
+            col = continent
+            # heat map
+            pu, do = heat_map
+            try:
+                heat = pu[pu.PULocationID==loc_id].iloc[-1]["scale"]
+                #heat = do[do.DOLocationID==loc_id].iloc[-1]["scale"]
+            except:
+                heat = min(pu["scale"])
+                #heat = min(do["scale"])
+            col = colors[math.ceil(heat*5)-1]
+            # check number of parts (could use MultiPolygon class of shapely?)
+            nparts = len(shape.parts) # total parts
+            if nparts == 1:
+                polygon = Polygon(shape.points)
+                patch = PolygonPatch(polygon, facecolor=col, alpha=1.0, zorder=2)
+                ax.add_patch(patch)
+            else: # loop over parts of each shape, plot separately
+                for ip in range(nparts): # loop over parts, plot separately
+                    i0 = shape.parts[ip]
+                    if ip < nparts-1:
+                        i1 = shape.parts[ip+1]-1
+                    else:
+                        i1 = len(shape.points)
 
-	                polygon = Polygon(shape.points[i0:i1+1])
-	                patch = PolygonPatch(polygon, facecolor=col, alpha=1.0, zorder=2)
-	                ax.add_patch(patch)
-	        
-	        x = (shape.bbox[0]+shape.bbox[2])/2
-	        y = (shape.bbox[1]+shape.bbox[3])/2
+                    polygon = Polygon(shape.points[i0:i1+1])
+                    patch = PolygonPatch(polygon, facecolor=col, alpha=1.0, zorder=2)
+                    ax.add_patch(patch)
+            
+            x = (shape.bbox[0]+shape.bbox[2])/2
+            y = (shape.bbox[1]+shape.bbox[3])/2
 
-	        plt.text(x, y, str(loc_id), fontsize=9, horizontalalignment='center', verticalalignment='center')                
+            plt.text(x, y, str(loc_id), fontsize=9, horizontalalignment='center', verticalalignment='center')                
     # display
 
     # lat_lon_df = get_lat_lon(sf)
@@ -124,6 +148,9 @@ df_loc.head()
 
 fig, ax = plt.subplots(nrows=1, ncols=1) #figsize=(15, 15)
 ax = plt.subplot(1, 1, 1)
-ax.set_title("Manhattan")
 draw_zone_map(ax, sf)
+ax.set_title("Manhattan Drop Off Heat Map (2019.01-06)")
+
+#ax.set_title("Manhattan Pick Up Heat Map (2019.01-06)")
+
 plt.show()
