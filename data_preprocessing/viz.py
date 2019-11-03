@@ -17,18 +17,17 @@ plt.style.use('ggplot')
 #get scaled for heat map
 do = pd.read_csv("dropoff-all.csv")
 do["scale"]=do["Half Year Sum"]
-l,u = min(do["scale"])-30, max(do["scale"])
-do["scale"] = (do["scale"]-l)/(u-l)
-print(min(do["scale"]), max(do["scale"]))
+
+#overall max is 750000, ajust min by 30
+do["scale"] = (do["scale"]+30)/(750000+30)
+
 #plt.scatter(do["DOLocationID"], do["scale"])
 #plt.show()
 
 pu = pd.read_csv("pickup-all.csv")
 pu["scale"]=pu["Half Year Sum"]
-l, u = min(pu["scale"])-30, max(pu["scale"])
-pu["scale"] = (pu["scale"]-l)/(u-l)
-print(min(pu["scale"]), max(pu["scale"]))
-#green_raw = pd.read_csv("green_tripdata_2019-01.csv")
+pu["scale"] = (pu["scale"]+30)/(750000+30)
+
 #print(green_raw)
 def get_lat_lon(sf):
 	#returns a dataframe with latitude and longitude
@@ -68,7 +67,7 @@ def draw_zone_map(ax, sf, heat_map=[pu,do]):
     colors = sns.color_palette("Reds",5)
     
     continent = "#990000"#[235/256, 151/256, 78/256]
-    ocean = "#66ccff" #(89/256, 171/256, 227/256)
+    ocean = "#66ccff" #(89/256, 171/256, 227/256) #"#FFFFFF" while
     #ocean = (22/256, 165/256, 217/256)
     ax.set_facecolor(ocean)
 
@@ -84,10 +83,10 @@ def draw_zone_map(ax, sf, heat_map=[pu,do]):
             pu, do = heat_map
             try:
                 heat = pu[pu.PULocationID==loc_id].iloc[-1]["scale"]
-                #heat = do[do.DOLocationID==loc_id].iloc[-1]["scale"]
+                heat = do[do.DOLocationID==loc_id].iloc[-1]["scale"]
             except:
                 heat = min(pu["scale"])
-                #heat = min(do["scale"])
+                heat = min(do["scale"])
             col = colors[math.ceil(heat*5)-1]
             # check number of parts (could use MultiPolygon class of shapely?)
             nparts = len(shape.parts) # total parts
@@ -110,7 +109,7 @@ def draw_zone_map(ax, sf, heat_map=[pu,do]):
             x = (shape.bbox[0]+shape.bbox[2])/2
             y = (shape.bbox[1]+shape.bbox[3])/2
 
-            plt.text(x, y, str(loc_id), fontsize=9, horizontalalignment='center', verticalalignment='center')                
+            plt.text(x, y, str(loc_id), fontsize=7, horizontalalignment='center', verticalalignment='center')                
     # display
 
     # lat_lon_df = get_lat_lon(sf)
@@ -122,7 +121,8 @@ def draw_zone_map(ax, sf, heat_map=[pu,do]):
     # 	max(lat_lon_df['longitude'])*2+margin)
 
     limits = get_boundaries(sf)
-    plt.xlim(limits[0], limits[1])
+    print("limits", limits)
+    plt.xlim(limits[0]-39050, limits[1]+39050)
     plt.ylim(limits[2], limits[3])
 
 sf = shapefile.Reader("taxi_zones/taxi_zones.shp")
@@ -144,13 +144,17 @@ attributes = sf.records()
 shp_attr = [dict(zip(fields_name, attr)) for attr in attributes]
 
 df_loc = pd.DataFrame(shp_attr).join(get_lat_lon(sf).set_index("LocationID"), on="LocationID")
-df_loc.head()
+#print("df_loc head",df_loc)
+#df_loc[["LocationID", "zone"]].to_csv("zone_id.csv")
 
-fig, ax = plt.subplots(nrows=1, ncols=1) #figsize=(15, 15)
+fig, ax = plt.subplots(nrows=1, ncols=1)#, figsize=(4, 15))
 ax = plt.subplot(1, 1, 1)
 draw_zone_map(ax, sf)
-ax.set_title("Manhattan Drop Off Heat Map (2019.01-06)")
-
+ax.set_title("Afternoon Dropoff Heat Map (2019.01-06)")
+#Pickup, Dropoff
+#[Morning, Afternoon, Evening, Night]
+#plt.xticks([])
+#plt.yticks([])
 #ax.set_title("Manhattan Pick Up Heat Map (2019.01-06)")
 
 plt.show()
